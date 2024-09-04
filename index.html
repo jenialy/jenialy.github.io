@@ -22,10 +22,10 @@
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
     .alice {
-      background-color: #ffebee; /* Light pink */
+      background-color: #ffebee;
     }
     .james {
-      background-color: #e3f2fd; /* Light blue */
+      background-color: #e3f2fd;
     }
     .child h2 {
       margin-bottom: 15px;
@@ -57,6 +57,31 @@
     .child .minus-button:hover {
       background-color: #d32f2f;
     }
+    .button-container {
+      margin-top: 30px;
+    }
+    .button-container button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 18px;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .button-container .save-button {
+      background-color: #2196F3;
+    }
+    .button-container .save-button:hover {
+      background-color: #1976D2;
+    }
+    .button-container .reset-button {
+      background-color: #f44336;
+    }
+    .button-container .reset-button:hover {
+      background-color: #d32f2f;
+    }
     #reset-info {
       margin-top: 30px;
       font-style: italic;
@@ -80,6 +105,11 @@
     <p>Points: <span id="james-points">0</span></p>
     <button class="plus-button" onclick="updatePoints('james', 1)">+1</button>
     <button class="minus-button" onclick="updatePoints('james', -1)">-1</button>
+  </div>
+  
+  <div class="button-container">
+    <button class="save-button" onclick="savePointsToCookies()">Save Points</button>
+    <button class="reset-button" onclick="resetPoints()">Reset Points</button>
   </div>
   
   <p id="reset-info"></p>
@@ -109,10 +139,6 @@
         negativeSound.play();
       }
 
-      // Save the updated points to cookies
-      setCookie('alicePoints', alicePoints, 365);
-      setCookie('jamesPoints', jamesPoints, 365);
-
       checkReset();
     }
 
@@ -123,15 +149,27 @@
         document.getElementById('alice-points').textContent = alicePoints;
         document.getElementById('james-points').textContent = jamesPoints;
         document.getElementById('reset-info').textContent = 'Points have been reset.';
-        // Save the updated points to cookies
-        setCookie('alicePoints', alicePoints, 365);
-        setCookie('jamesPoints', jamesPoints, 365);
       } else {
         document.getElementById('reset-info').textContent = '';
       }
     }
 
-    // Function to set a cookie
+    function savePointsToCookies() {
+      setCookie('alicePoints', alicePoints, 365);
+      setCookie('jamesPoints', jamesPoints, 365);
+      alert('Points saved successfully!');
+    }
+
+    function resetPoints() {
+      alicePoints = 0;
+      jamesPoints = 0;
+      document.getElementById('alice-points').textContent = alicePoints;
+      document.getElementById('james-points').textContent = jamesPoints;
+      setCookie('alicePoints', alicePoints, 365);
+      setCookie('jamesPoints', jamesPoints, 365);
+      alert('Points have been reset to 0!');
+    }
+
     function setCookie(name, value, days) {
       var expires = "";
       if (days) {
@@ -142,7 +180,6 @@
       document.cookie = name + "=" + (value || "") + expires + "; path=/";
     }
 
-    // Function to get a cookie value
     function getCookie(name) {
       var nameEQ = name + "=";
       var ca = document.cookie.split(';');
@@ -154,7 +191,6 @@
       return null;
     }
 
-    // When the page loads, retrieve the points from cookies
     window.addEventListener('load', function() {
       alicePoints = parseInt(getCookie('alicePoints')) || 0;
       jamesPoints = parseInt(getCookie('jamesPoints')) || 0;
