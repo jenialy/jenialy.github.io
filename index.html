@@ -3,7 +3,67 @@
 <head>
   <title>Point Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" type="text/css" href="styles.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      margin-bottom: 30px;
+      color: #333;
+      font-size: 36px;
+    }
+    .child {
+      margin-bottom: 30px;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .alice {
+      background-color: #ffebee; /* Light pink */
+    }
+    .james {
+      background-color: #e3f2fd; /* Light blue */
+    }
+    .child h2 {
+      margin-bottom: 15px;
+      color: #555;
+      font-size: 28px;
+    }
+    .child p {
+      font-size: 24px;
+    }
+    .child button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 20px;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .child .plus-button {
+      background-color: #4CAF50;
+    }
+    .child .plus-button:hover {
+      background-color: #45a049;
+    }
+    .child .minus-button {
+      background-color: #f44336;
+    }
+    .child .minus-button:hover {
+      background-color: #d32f2f;
+    }
+    #reset-info {
+      margin-top: 30px;
+      font-style: italic;
+      font-size: 18px;
+      color: #777;
+    }
+  </style>
 </head>
 <body>
   <h1>Point Tracker</h1>
@@ -27,6 +87,80 @@
   <audio id="positive-sound" src="positive.mp3"></audio>
   <audio id="negative-sound" src="negative.mp3"></audio>
   
-  <script src="script.js"></script>
+  <script>
+    let alicePoints = 0;
+    let jamesPoints = 0;
+    const resetThreshold = 50;
+    const positiveSound = document.getElementById('positive-sound');
+    const negativeSound = document.getElementById('negative-sound');
+
+    function updatePoints(child, value) {
+      if (child === 'alice') {
+        alicePoints += value;
+        document.getElementById('alice-points').textContent = alicePoints;
+      } else if (child === 'james') {
+        jamesPoints += value;
+        document.getElementById('james-points').textContent = jamesPoints;
+      }
+
+      if (value > 0) {
+        positiveSound.play();
+      } else if (value < 0) {
+        negativeSound.play();
+      }
+
+      // Save the updated points to cookies
+      setCookie('alicePoints', alicePoints, 365);
+      setCookie('jamesPoints', jamesPoints, 365);
+
+      checkReset();
+    }
+
+    function checkReset() {
+      if (alicePoints >= resetThreshold || jamesPoints >= resetThreshold) {
+        alicePoints = 0;
+        jamesPoints = 0;
+        document.getElementById('alice-points').textContent = alicePoints;
+        document.getElementById('james-points').textContent = jamesPoints;
+        document.getElementById('reset-info').textContent = 'Points have been reset.';
+        // Save the updated points to cookies
+        setCookie('alicePoints', alicePoints, 365);
+        setCookie('jamesPoints', jamesPoints, 365);
+      } else {
+        document.getElementById('reset-info').textContent = '';
+      }
+    }
+
+    // Function to set a cookie
+    function setCookie(name, value, days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = "; expires=" + date.toUTCString();
+      }
+      document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
+
+    // Function to get a cookie value
+    function getCookie(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for (var i = 0; i < ca.length; i++) {
+        var c = ca[i];
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+      }
+      return null;
+    }
+
+    // When the page loads, retrieve the points from cookies
+    window.addEventListener('load', function() {
+      alicePoints = parseInt(getCookie('alicePoints')) || 0;
+      jamesPoints = parseInt(getCookie('jamesPoints')) || 0;
+      document.getElementById('alice-points').textContent = alicePoints;
+      document.getElementById('james-points').textContent = jamesPoints;
+    });
+  </script>
 </body>
 </html>
