@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Point Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+<body>
+  <h1>Point Tracker</h1>
+  
+  <div class="child alice">
+    <h2>Alice</h2>
+    <p>Points: <span id="alice-points">0</span></p>
+    <button class="plus-button" onclick="updatePoints('alice', 1)">+1</button>
+    <button class="minus-button" onclick="updatePoints('alice', -1)">-1</button>
+  </div>
+  
+  <div class="child james">
+    <h2>James</h2>
+    <p>Points: <span id="james-points">0</span></p>
+    <button class="plus-button" onclick="updatePoints('james', 1)">+1</button>
+    <button class="minus-button" onclick="updatePoints('james', -1)">-1</button>
+  </div>
+  
+  <p id="reset-info"></p>
+  
+  <audio id="positive-sound" src="positive.mp3"></audio>
+  <audio id="negative-sound" src="negative.mp3"></audio>
+  
+  <script src="script.js"></script>
+</body>
+</html>
